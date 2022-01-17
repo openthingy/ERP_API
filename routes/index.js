@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+// Logging
+const debug = require('debug');
+const log   = debug('app:log');
+const info  = debug('app:info');
+const warn  = debug('app:warn'); 
+const error = debug('app:error'); 
 
 // This is a example route
 /* GET users listing. */

@@ -1,16 +1,17 @@
 {
-  "name": "apitemplate",
-  "description": "API Template",
-  "version": "0.0.0",
+  "name": "gesenterprise",
+  "description": "Enterprise Management System",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=express:* node ./bin/www"
+    "debug": "DEBUG=app:* node ./bin/www",
+    "debug-win": "set DEBUG=app:* && node ./bin/www"
   },
   "dependencies": {
-    "debug": "latest",
-    "express": "latest",
-    "http-errors": "latest",
-    "walk-sync": "latest"
+    "debug": "^4.3.3",
+    "express": "^4.17.2",
+    "http-errors": "^2.0.0",
+    "walk-sync": "^3.0.0"
   }
 }
