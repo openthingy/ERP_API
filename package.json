@@ -1,0 +1,16 @@
+{
+  "name": "apitemplate",
+  "description": "API Template",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "debug": "DEBUG=express:* node ./bin/www"
+  },
+  "dependencies": {
+    "debug": "latest",
+    "express": "latest",
+    "http-errors": "latest",
+    "walk-sync": "latest"
+  }
+}
