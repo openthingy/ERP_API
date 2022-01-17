@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(function (req, res, next) {
   req.id = crypto.randomUUID(); // Generate a unique ID for each request
-  log(`${req.id}: IP: ${req.ip} Time: ${new Date()}`);
+  log(`${req.id}: IP: ${req.ip} Time: ${new Date()}`); // For Tracing purposes
   next();
 });
 
@@ -52,14 +52,18 @@ paths.forEach(function (value, index, array) {
     value_index = value.slice(0, -8);
     app.use("/" + value_index, require(dir + value_nojs)); // Route: /test
     app.use("/" + value_nojs, require(dir + value_nojs));  // Route: /test/index
+    info("Added Route: /" + value_index);
+    info("Added Route: /" + value_nojs);
   } else {
     app.use("/" + value_nojs, require(dir + value_nojs));
+    info("Added Route: /" + value_nojs);
   }
 })
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  log(`${req.id}: Reached 404`)
   next(createError(404));
 });
 
