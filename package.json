@@ -6,15 +6,21 @@
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=app:* node ./bin/www",
-    "debug-win": "set DEBUG=app:* && node ./bin/www"
+    "debug": "DEBUG=debug:* nodemon ./bin/www",
+    "debug-win": "set DEBUG=debug:* && nodemon ./bin/www"
   },
   "dependencies": {
+    "auth": "file:modules/auth",
+    "controldb": "file:modules/ControlDB",
     "debug": "^4.3.3",
     "express": "^4.17.2",
+    "gesenterprise": "file:modules/gesenterprise",
     "http-errors": "^2.0.0",
     "mongodb": "^4.3.1",
     "supports-color": "^9.2.1",
     "walk-sync": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
