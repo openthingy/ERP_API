@@ -9,7 +9,7 @@ const config = gesenterprise.config;
 
 router.get('/', async function(req, res, next) {
   const db_url = config.database.mongo_url;
-  gesenterprise.log("Connecting to database: " + db_url);
+  gesenterprise.info("Connecting to database: " + db_url);
   // Connect to the db
   const client = new MongoClient(db_url);
   try {
@@ -30,7 +30,7 @@ router.get('/', async function(req, res, next) {
 });
 
 router.all('/', function(req, res, next) {
-  gesenterprise.log(req.id + ": Method not allowed");
+  gesenterprise.info(req.id + ": Method not allowed");
   next(createError(405));
 });
 module.exports = router;
