@@ -15,7 +15,7 @@ class db {
         try {
             await client.connect();
             const db_client = await client.db(config.database.db);
-            const key_user = await db_client.collection("api").findOne({"session_key": key});
+            const key_user = await db_client.collection("api").findOne({"key": key});
             return key_user.emp_id;
         } catch (err) {
             error(err);
@@ -43,10 +43,28 @@ class db {
     }
 }
 
+class auth {
+    static async is_key_valid(key) {
+        const client = new mongo.MongoClient(config.database.mongo_url);
+        try {
+            await client.connect();
+            const db_client = await client.db(config.database.db);
+            const is_valid = await db_client.collection("api").findOne({"key": key}).count();
+            return is_valid; // If it finds it will return 1 (true) else it will return 0 (false)
+        } catch (err) {
+            error(err);
+            return false;
+        } finally {
+            await client.close();
+        }
+    }
+}
+
 module.exports = {
     info,
     warn,
     error,
     config,
-    db
+    db,
+    auth
 };
