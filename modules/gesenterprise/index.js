@@ -1,6 +1,7 @@
 const config = require("./config.json");
 const debug  = require("debug")("debug");
 const mongo = require("mongodb");
+const crypto = require("crypto");
 // Logging
 const info = debug.extend("info");
 const warn = debug.extend("warn");
@@ -51,6 +52,48 @@ class auth {
             const db_client = await client.db(config.database.db);
             const is_valid = await db_client.collection("api").findOne({"key": key}).count();
             return is_valid; // If it finds it will return 1 (true) else it will return 0 (false)
+        } catch (err) {
+            error(err);
+            return false;
+        } finally {
+            await client.close();
+        }
+    }
+
+    
+    static async login(email, password) {
+        // Password must be a SHA-256 encrypted string
+
+        const client = new mongo.MongoClient(config.database.mongo_url);
+        try {
+            await client.connect();
+            const db_client = await client.db(config.database.db);
+            const emp_info = await db_client.collection("employees").findOne({"email": email, "password": password});
+            if (!emp_info) {
+                return false;
+            }
+            const key = crypto.randomBytes(32).toString('hex');
+            await db_client.collection("api").insertOne({
+                "key": key,
+                "emp_id": emp_info._id,
+                "created_at": new Date()
+            });
+            return key;
+        } catch (err) {
+            error(err);
+            return false;
+        } finally {
+            await client.close();
+        }
+    }
+
+    static async logout(key) {
+        const client = new mongo.MongoClient(config.database.mongo_url);
+        try {
+            await client.connect();
+            const db_client = await client.db(config.database.db);
+            await db_client.collection("api").deleteOne({"key": key});
+            return true;
         } catch (err) {
             error(err);
             return false;
