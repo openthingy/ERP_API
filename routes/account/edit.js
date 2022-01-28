@@ -9,10 +9,9 @@ const config = gesenterprise.config;
 
 router.post('/', async function(req, res, next) {
 
-  const email = req.body.email;
-  const password = req.body.password;
+  const key = req.body.session_key;
 
-  if (!email || !password) {gesenterprise.info(`${req.id}: Missing email or password`); next(createError(400)); return;} // Doesnt execute the rest of the code
+  if (!key) {log(`${req.id}: Missing key`); next(createError(400)); return;} // Doesnt execute the rest of the code
 
   const db_url = config.database.mongo_url;
   // Connect to the db
@@ -22,7 +21,7 @@ router.post('/', async function(req, res, next) {
     db = await client.db(config.database.database);
     // Check if the user exists
     user_info = await db.collection('employees').findOne({email: email, password: password});
-    if (!user_info) { log(`${req.id}: Login Unsucessful`); next(createError(401)); return;}
+    if (!user_info) { gesenterprise.info(`${req.id}: Login Unsucessful`); next(createError(401)); return;}
 
     // Generate a Session Key
     const session_key = crypto.randomBytes(32).toString('hex');
@@ -37,7 +36,7 @@ router.post('/', async function(req, res, next) {
     // Send the session key to the client
     res.json({"session_key": session_key});
     gesenterprise.info(`${req.id}: Login Successful`);	
-    
+
   } catch (err) {
     gesenterprise.error("An error ocurred during MongoDB connection/query: " + err);
     next(createError(500)); // Internal Server Error

@@ -10,12 +10,11 @@ const config = gesenterprise.config;
 router.post('/', async function(req, res, next) {
 
   const email = req.body.email;
-  const password = req.body.password;
+  const password = req.body.password; // Password should be SHA-256 encrypted
 
   if (!email || !password) {log(`${req.id}: Missing email or password`); next(createError(400)); return;} // Doesnt execute the rest of the code
 
   const db_url = config.database.mongo_url;
-  gesenterprise.info("Connecting to database: " + db_url);
   // Connect to the db
   const client = new MongoClient(db_url);
   try {
