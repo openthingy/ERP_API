@@ -18,8 +18,9 @@ gesenterprise
                     	    |---String
                 |--------ss_num
                             |---String
-                |--------employed
+                |--------active
                             |---Boolean
+                            |---Do they still work at the company
                 |--------company_id
                             |---ObjectID
                 |--------perm_level

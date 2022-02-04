@@ -7,8 +7,7 @@ const gesenterprise = require("gesenterprise");
 /* GET users listing. */
 router.all('/', async function(req, res, next) {
   // All responses must be sent in json
-  const key = await gesenterprise.auth.login("test@gmail.com", "teste");
-  gesenterprise.info(key);
+  const key = await gesenterprise.auth.login("teste@gmail.com", "teste");
   res.json({"hello": "world", "key": key});
 });
 

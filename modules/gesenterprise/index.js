@@ -60,18 +60,16 @@ class auth {
         }
     }
 
-    
     static async login(email, password) {
         // Password must be a SHA-256 encrypted string
-
         const client = new mongo.MongoClient(config.database.mongo_url);
         try {
             await client.connect();
             const db_client = await client.db(config.database.db);
             const emp_info = await db_client.collection("employees").findOne({"email": email, "password": password});
-            if (!emp_info) {
-                return false;
-            }
+            if (!emp_info) {return false;}
+            
+            // generate API key
             const key = crypto.randomBytes(32).toString('hex');
             await db_client.collection("api").insertOne({
                 "key": key,
@@ -79,6 +77,7 @@ class auth {
                 "created_at": new Date()
             });
             return key;
+
         } catch (err) {
             error(err);
             return false;
@@ -92,7 +91,8 @@ class auth {
         try {
             await client.connect();
             const db_client = await client.db(config.database.db);
-            await db_client.collection("api").deleteOne({"key": key});
+            const deleted = await db_client.collection("api").deleteOne({"key": key});
+            if (deleted.deletedCount == 0) { return false; }
             return true;
         } catch (err) {
             error(err);

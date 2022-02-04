@@ -12,43 +12,22 @@ router.post('/', async function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password; // Password should be SHA-256 encrypted
 
-  if (!email || !password) {log(`${req.id}: Missing email or password`); next(createError(400)); return;} // Doesnt execute the rest of the code
+  if (!email || !password) { gesenterprise.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
 
-  const db_url = config.database.mongo_url;
-  // Connect to the db
-  const client = new MongoClient(db_url);
   try {
-    await client.connect();
-    db = await client.db(config.database.database);
-    // Check if the user exists
-    user_info = await db.collection('employees').findOne({email: email, password: password});
-    if (!user_info) { gesenterprise.info(`${req.id}: Login Unsucessful`); next(createError(401)); return;}
-
-    // Generate a Session Key
-    const session_key = crypto.randomBytes(32).toString('hex');
-
-    // Store the session key in the database
-    await db.collection('sessions').insertOne({
-        session_key: session_key,
-        user_id: user_info._id,
-        created_at: new Date()
-    });
-
-    // Send the session key to the client
-    res.json({"session_key": session_key});
-    gesenterprise.info(`${req.id}: Login Successful`);	
-
+    const key = await gesenterprise.auth.login(email, password);
+    if (!key) { return next(createError(401));}
+    gesenterprise.info(`${req.id}: Login sucessful`)
+    res.json({"key": key});
   } catch (err) {
-    gesenterprise.error("An error ocurred during MongoDB connection/query: " + err);
-    next(createError(500)); // Internal Server Error
-  } finally {
-    await client.close();
+    gesenterprise.error(`${req.id}: Something went wrong: ` + err);
+    return next(createError(500)); // Internal Server Error
   }
   
 });
 
 router.all('/', function(req, res, next) {
-  gesenterprise.info(req.id + ": Method not allowed");
+  gesenterprise.warn(req.id + ": Method not allowed");
   next(createError(405));
 });
 module.exports = router;
