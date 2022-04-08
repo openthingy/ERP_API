@@ -10,8 +10,6 @@
     "debug-win": "set DEBUG=debug:* && nodemon ./bin/www"
   },
   "dependencies": {
-    "auth": "file:modules/auth",
-    "controldb": "file:modules/ControlDB",
     "debug": "^4.3.3",
     "express": "^4.17.2",
     "gesenterprise": "file:modules/gesenterprise",
