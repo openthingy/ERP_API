@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $(lsb_release -rs) == "22.04" ]]; then
+if [[ $(lsb_release -rs) == "20.04" ]]; then
   echo "Compatible version detected"
 else
   echo "Sorry this version of GesEnterprise is not compatible with your server version"
