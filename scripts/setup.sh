@@ -44,7 +44,7 @@ fi
 
 # NginX (Engine X, that's how its pronounced)
 echo "Installing NginX"
-curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo gpg --dearmor > /usr/share/keyrings/nginx-archive-keyring.gpg > /dev/null
+curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo gpg --dearmor > /usr/share/keyrings/nginx-archive-keyring.gpg
 echo deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu $codename nginx > /etc/apt/sources.list.d/nginx-mainline.list
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx > /dev/null
 sudo apt-get update > /dev/null
@@ -71,7 +71,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # MongoDB
-curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | sudo gpg --dearmor > /usr/share/keyrings/mongodb-server-keyring.gpg > /dev/null
+curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | sudo gpg --dearmor > /usr/share/keyrings/mongodb-server-keyring.gpg
 echo deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-keyring.gpg] https://repo.mongodb.org/apt/ubuntu $codename/mongodb-org/5.0 multiverse > /etc/apt/sources.list.d/mongodb-server.list
 echo "Installing MongoDB"
 sudo apt-get update > /dev/null
