@@ -11,7 +11,7 @@ warn.color = 3;
 error.color = 1;
 
 class db {
-    static async user_from_key(key) {
+    static async userFromKey(key) {
         const client = new mongo.MongoClient(config.database.mongo_url);
         try {
             await client.connect();

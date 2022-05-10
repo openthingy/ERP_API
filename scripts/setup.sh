@@ -85,3 +85,7 @@ echo "Starting MongoDB"
 sudo systemctl daemon-reload > /dev/null
 sudo systemctl start mongod > /dev/null
 sudo systemctl enable mongod > /dev/null
+
+echo "\n\n\n\n\n"
+echo "Software installed"
+echo "Configure all software using config.sh or manually"
