@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
-const crypto = require("crypto");
-const { MongoClient } = require('mongodb');
 
 const gesenterprise = require("gesenterprise");
-const config = gesenterprise.config;
 
-router.post('/', async function(req, res, next) {
+router.post("/", async function(req, res, next) {
 
   const email = req.body.email;
   const password = req.body.password; // Password should be SHA-256 encrypted
@@ -17,7 +14,7 @@ router.post('/', async function(req, res, next) {
   try {
     const key = await gesenterprise.auth.login(email, password);
     if (!key) { return next(createError(401));}
-    gesenterprise.info(`${req.id}: Login sucessful`)
+    gesenterprise.info(`${req.id}: Login sucessful`);
     res.json({"key": key});
   } catch (err) {
     gesenterprise.error(`${req.id}: Something went wrong: ` + err);
@@ -26,7 +23,7 @@ router.post('/', async function(req, res, next) {
   
 });
 
-router.all('/', function(req, res, next) {
+router.all("/", function(req, res, next) {
   gesenterprise.warn(req.id + ": Method not allowed");
   next(createError(405));
 });

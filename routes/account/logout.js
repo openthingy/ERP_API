@@ -3,9 +3,8 @@ const router = express.Router();
 const createError = require("http-errors");
 
 const gesenterprise = require("gesenterprise");
-const config = gesenterprise.config;
 
-router.post('/', async function(req, res, next) {
+router.post("/", async function(req, res, next) {
 
   const emp_key = req.body.key;
 
@@ -22,10 +21,10 @@ router.post('/', async function(req, res, next) {
   res.json({
     "action": "logout",
     "success": "true"
-  })
+  });
 });
 
-router.all('/', function(req, res, next) {
+router.all("/", function(req, res, next) {
   gesenterprise.info(req.id + ": Method not allowed");
   next(createError(405));
 });

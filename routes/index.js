@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const createError = require("http-errors");
-const { MongoClient } = require('mongodb');
-
+const process = require("process");
 
 const gesenterprise = require("gesenterprise");
-const config = gesenterprise.config;
 
-router.all('/', function(req, res, next) {
+router.all("/", function(req, res) {
+  let env;
   if (process.env.GESENT) {
     env = process.env.GESENT;
   } else {
@@ -18,7 +16,7 @@ router.all('/', function(req, res, next) {
     "GesEnterprise": "beta",
     "env": env,
     "author": "@github/danielalexis"
-  })
+  });
 });
 
 module.exports = router;
