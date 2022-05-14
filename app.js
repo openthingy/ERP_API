@@ -1,8 +1,7 @@
-const createError = require('http-errors');
-const express = require('express');
-const walkSync = require('walk-sync');
-const {MongoClient} = require('mongodb');
-const crypto = require('crypto');
+const createError = require("http-errors");
+const express = require("express");
+const walkSync = require("walk-sync");
+const crypto = require("crypto");
 const app = express();
 
 const gesenterprise = require("gesenterprise");
@@ -19,7 +18,7 @@ app.use(function (req, res, next) {
 
 
 
-dir = "./routes/"
+const dir = "./routes/";
 const paths = walkSync(dir, { directories: false }); //Express doesn't like async stuff
 paths.forEach(function (value, index, array) {
   value_nojs = value.slice(0, -3); //removes .js, assuming all files are .js
@@ -34,18 +33,18 @@ paths.forEach(function (value, index, array) {
     app.use("/" + value_nojs, require(dir + value_nojs));
     gesenterprise.info("Added Route: /" + value_nojs);
   }
-})
+});
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  gesenterprise.warn(`${req.id}: Reached 404`)
+  gesenterprise.warn(`${req.id}: Reached 404`);
   next(createError(404));
 });
 
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // render the error page
   res.status(err.status || 500);
   res.json({"code": err.status, "error.message":err.message});
