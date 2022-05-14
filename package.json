@@ -15,7 +15,6 @@
     "gesenterprise": "file:modules/gesenterprise",
     "http-errors": "^2.0.0",
     "mongodb": "^4.3.1",
-    "supports-color": "^9.2.1",
     "walk-sync": "^3.0.0"
   },
   "devDependencies": {
