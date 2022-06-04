@@ -93,5 +93,6 @@ module.exports = {
   error,
   config,
   sanitizeInput,
-  db
+  db,
+  hr
 };
