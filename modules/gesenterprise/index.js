@@ -79,6 +79,13 @@ class db {
   }
 }
 
+/**
+* HR related stuff like sending salaries, etc
+* @class
+*/
+class hr {
+
+}
 
 module.exports = {
   info,
