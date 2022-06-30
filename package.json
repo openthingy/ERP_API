@@ -10,16 +10,16 @@
     "debug-win": "set DEBUG=debug:* && nodemon ./bin/www"
   },
   "dependencies": {
-    "debug": "^4.3.3",
-    "express": "^4.17.2",
+    "debug": "^4.3.4",
+    "express": "^4.18.1",
     "gesenterprise": "file:modules/gesenterprise",
     "http-errors": "^2.0.0",
-    "mongodb": "^4.3.1",
+    "mongodb": "^4.7.0",
     "walk-sync": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.15.0",
+    "eslint": "^8.18.0",
     "nodemon": "^2.0.18",
-    "got": ">=11.8.5"
+    "got": "^12.1.0"
   }
 }
