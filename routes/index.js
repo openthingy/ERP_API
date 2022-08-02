@@ -2,20 +2,13 @@ const express = require("express");
 const router = express.Router();
 const process = require("process");
 
-const gesenterprise = require("gesenterprise");
+const poluino = require("poluinosdk");
 
 router.all("/", function(req, res) {
-  let env;
-  if (process.env.GESENT) {
-    env = process.env.GESENT;
-  } else {
-    gesenterprise.warn("Could not determine current environment, setting DEV as environment");
-    env = "DEV";
-  }
   res.json({
-    "GesEnterprise": "beta",
-    "env": env,
-    "author": "@github/danielalexis"
+    "Poluino API": "beta",
+    "author": "@openthingy",
+    "client.ip": req.ip
   });
 });
 

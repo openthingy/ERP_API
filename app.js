@@ -4,7 +4,7 @@ const walkSync = require("walk-sync");
 const crypto = require("crypto");
 const app = express();
 
-const gesenterprise = require("gesenterprise");
+const poluino = require("poluinosdk");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 // Request ID generator and begin logging
 app.use(function (req, res, next) {
   req.id = crypto.randomUUID(); // Generate a unique ID for each request
-  gesenterprise.info(`${req.id}: IP: ${req.ip} Path: ${req.path} Time: ${new Date()}`); // For Tracing purposes
+  poluino.info(`${req.id}: IP: ${req.ip} Path: ${req.path} Time: ${new Date()}`); // For Tracing purposes
   next();
 });
 
@@ -27,18 +27,18 @@ paths.forEach(function (value) {
     let value_index = value.slice(0, -8);
     app.use("/" + value_index, require(dir + value_nojs)); // Route: /test
     app.use("/" + value_nojs, require(dir + value_nojs));  // Route: /test/index
-    gesenterprise.info("Added Route: /" + value_index);
-    gesenterprise.info("Added Route: /" + value_nojs);
+    poluino.info("Added Route: /" + value_index);
+    poluino.info("Added Route: /" + value_nojs);
   } else {
     app.use("/" + value_nojs, require(dir + value_nojs));
-    gesenterprise.info("Added Route: /" + value_nojs);
+    poluino.info("Added Route: /" + value_nojs);
   }
 });
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  gesenterprise.warn(`${req.id}: Reached 404`);
+  poluino.warn(`${req.id}: Reached 404`);
   next(createError(404));
 });
 

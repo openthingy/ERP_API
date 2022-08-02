@@ -1,6 +1,6 @@
 {
-  "name": "gesenterprise",
-  "description": "Enterprise Management System",
+  "name": "poluinoapi",
+  "description": "Project Poluino API",
   "version": "0.0.1",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -12,7 +12,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "express": "^4.18.1",
-    "gesenterprise": "file:modules/gesenterprise",
+    "poluinosdk": "file:modules/poluinosdk",
     "http-errors": "^2.0.0",
     "mongodb": "^4.7.0",
     "walk-sync": "^3.0.0"
