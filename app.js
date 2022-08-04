@@ -17,9 +17,9 @@ app.use(function (req, res, next) {
 });
 
 
-
+// At some point we've gotta change this
 const dir = "./routes/";
-const paths = walkSync(dir, { directories: false }); //Express doesn't like async stuff
+const paths = walkSync(dir, { directories: false });
 paths.forEach(function (value) {
   let value_nojs = value.slice(0, -3); //removes .js, assuming all files are .js
 
@@ -39,12 +39,16 @@ paths.forEach(function (value) {
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   poluino.warn(`${req.id}: Reached 404`);
-  next(createError(404));
+  return next(createError(404));
 });
 
 
 // error handler
-app.use(function(err, req, res) {
+// this disables the `next` is unused warning, for some reason its required
+// or else the error handler just straight up stops working
+// eslint-disable-next-line no-unused-vars
+app.use(function(err, req, res, next) {
+  poluino.error(`${req.id}: Error: ${err}`);
   // render the error page
   res.status(err.status || 500);
   res.json({"code": err.status, "error.message":err.message});

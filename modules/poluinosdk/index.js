@@ -8,16 +8,11 @@ const mongo = require("mongodb");
 const info = debug.extend("info");
 const warn = debug.extend("warn");
 const error = debug.extend("error");
-info.color = 4; //Blue
+info.color = 4; // Blue
 warn.color = 3; // Yellow
 error.color = 1; // Red
 
-/**
-* Sanitizes any given input because of NoSQL injection
-* @function
-* @param input Input
-* @returns {object} Returns a safe input
-*/
+
 
 
 /**
@@ -25,6 +20,12 @@ error.color = 1; // Red
 * @class
 */
 class validation {
+  /**
+  * Sanitizes any given input because of NoSQL injection
+  * @function
+  * @param input Input
+  * @returns {object} Returns a safe input
+  */
   static sanitizeInput(input) {
     // Escape all NoSQL injection characters
     // I have no idea how this works, thanks Github Copilot
@@ -53,15 +54,16 @@ class session {
     const client = new mongo.MongoClient(mongoUrl);
     try {
       await client.connect();
-      const dbClient = await client.db(mongoDb);
-      const user = await dbClient.collection("users").findOne({"email": email, "password": password}).count();
-      if (user.count() > 0) {
+      const dbClient = client.db(mongoDb);
+      const user = await dbClient.collection("users").findOne({"email": email, "password": password});
+      if (user) {
         const session = {
           "_id": mongo.ObjectId(),
           "userId": user._id,
           "date": Date.now()
         };
         await dbClient.collection("sessions").insertOne(session);
+        return session._id;
       } else {
         return "WRONG_EMAIL_OR_PASSWORD";
       }
@@ -85,7 +87,7 @@ class session {
     const client = new mongo.MongoClient(mongoUrl);
     try {
       await client.connect();
-      const dbClient = await client.db(mongoDb);
+      const dbClient = client.db(mongoDb);
       await dbClient.collection("sessions").deleteOne({"_id": sessionId});
       return true;
     } catch (err) {
@@ -109,7 +111,7 @@ class session {
     const client = new mongo.MongoClient(mongoUrl);
     try {
       await client.connect();
-      const dbClient = await client.db(mongoDb);
+      const dbClient = client.db(mongoDb);
       const session = await dbClient.collection("sessions").findOne({"_id": sessionId});
       if (session.count() > 0) {
         if (session.date < 14400000) { // 14400000 miliseconds equals 4 hours
@@ -131,6 +133,44 @@ class session {
   }
 }
 
+/**
+ * User-related functions like edit email, password, etc
+ * @class
+ */
+class user {
+  /**
+  * Gets user data from Session Id.
+  * @function
+  * @param sessionId Session Id stored on the database.
+  * @returns {object|boolean} Returns whether session is valid, if so also returns user ObjectId
+  */
+  static async isSessionValid(sessionId) {
+    sessionId = validation.sanitizeInput(sessionId);
+    sessionId = mongo.ObjectId(sessionId);
+    const client = new mongo.MongoClient(mongoUrl);
+    try {
+      await client.connect();
+      const dbClient = client.db(mongoDb);
+      const session = await dbClient.collection("sessions").findOne({"_id": sessionId});
+      if (session.count() > 0) {
+        if (session.date < 14400000) { // 14400000 miliseconds equals 4 hours
+          return {
+            "session": true,
+            "userId": session.userId.toString()
+          };
+        } else { 
+          await dbClient.collection("sessions").deleteOne({"_id": sessionId}); 
+          return false; 
+        }
+      } else { return false; }
+    } catch (err) {
+      error(err);
+      return false;
+    } finally {
+      await client.close();
+    }
+  }
+}
 
 module.exports = {
   info,
@@ -138,5 +178,6 @@ module.exports = {
   error,
   config,
   validation,
-  session
+  session,
+  user
 };

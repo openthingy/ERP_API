@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const process = require("process");
 
-const poluino = require("poluinosdk");
+// const poluino = require("poluinosdk");
 
 router.all("/", function(req, res) {
   res.json({
