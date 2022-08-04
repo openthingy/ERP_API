@@ -1,8 +1,8 @@
-# GesEnterprise
-Enterprise Management Software
+# Project Poluino API
+This is Project Poluino API based on Node.JS + Express
 
 # Setup
-Setup GesEnterprise (config.json)
+Setup Poluino API (config.json)
 Make a symlink for config to modules
 
 Example:
