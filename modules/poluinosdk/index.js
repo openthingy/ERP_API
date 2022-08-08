@@ -13,8 +13,6 @@ warn.color = 3; // Yellow
 error.color = 1; // Red
 
 
-
-
 /**
 * Database related stuff, like get user data,etc...
 * @class
@@ -28,9 +26,8 @@ class validation {
   */
   static sanitizeInput(input) {
     // Escape all NoSQL injection characters
-    // I have no idea how this works, thanks Github Copilot
-    //let regex = /[`~!@#$%^&*()_|+\-=?;:'",<>\{\}\[\]\\\/]/gi;
     // I still dont know how to make security
+    // TBD
     return input;
   }
 
@@ -46,9 +43,9 @@ class session {
   * Add a new session (for login)
   * @function
   * @param sessionId Session Id stored on the database.
-  * @returns {object} Returns whether the Session Id was deleted
+  * @returns {object} Returns the Session Id
   */
-  static async addSession(email, password) {
+  static async addLoginSession(email, password) {
     email = validation.sanitizeInput(email);
     password = validation.sanitizeInput(password); // SHA-256 encrypted
     const client = new mongo.MongoClient(mongoUrl);
@@ -60,12 +57,47 @@ class session {
         const session = {
           "_id": mongo.ObjectId(),
           "userId": user._id,
+          "sessionType": "login",
           "date": Date.now()
         };
         await dbClient.collection("sessions").insertOne(session);
         return session._id;
       } else {
         return "WRONG_EMAIL_OR_PASSWORD";
+      }
+    } catch (err) {
+      error(err);
+      return false;
+    } finally {
+      await client.close();
+    }
+  }
+
+  /**
+  * Add a new session (for API Key)
+  * @function
+  * @param sessionId Session Id stored on the database.
+  * @returns {object} Returns the Session Id
+  */
+  static async addAPISession(email, password) {
+    email = validation.sanitizeInput(email);
+    password = validation.sanitizeInput(password); // SHA-256 encrypted
+    const client = new mongo.MongoClient(mongoUrl);
+    try {
+      await client.connect();
+      const dbClient = client.db(mongoDb);
+      const user = await dbClient.collection("users").findOne({"email": email, "password": password});
+      if (user) {
+        const session = {
+          "_id": mongo.ObjectId(),
+          "userId": user._id,
+          "sessionType": "api",
+          "date": Date.now()
+        };
+        await dbClient.collection("sessions").insertOne(session);
+        return session._id;
+      } else {
+        return "WRONG_API_KEY";
       }
     } catch (err) {
       error(err);
@@ -113,15 +145,16 @@ class session {
       await client.connect();
       const dbClient = client.db(mongoDb);
       const session = await dbClient.collection("sessions").findOne({"_id": sessionId});
-      if (session.count() > 0) {
-        if (session.date < 14400000) { // 14400000 miliseconds equals 4 hours
+      if (session) {
+        if (session.date > 14400000 && session.type == "login") { // 14400000 miliseconds equals 4 hours
+          this.deleteSession(sessionId);
+          return false; 
+        } else {
           return {
             "session": true,
             "userId": session.userId.toString()
           };
-        } else { 
-          await dbClient.collection("sessions").deleteOne({"_id": sessionId}); 
-          return false; 
+
         }
       } else { return false; }
     } catch (err) {

@@ -5,9 +5,12 @@ const router = express.Router();
 
 router.all("/", function(req, res) {
   res.json({
-    "Poluino API": "beta",
+    "poluino.api": "beta",
     "author": "@openthingy",
-    "client.ip": req.ip
+    "request": {
+      "ip": req.ip,
+      "id": req.id
+    }
   });
 });
 
