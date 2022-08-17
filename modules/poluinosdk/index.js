@@ -58,7 +58,7 @@ class session {
           "_id": mongo.ObjectId(),
           "userId": user._id,
           "sessionType": "login",
-          "date": Date.now()
+          "date": new Date()
         };
         await dbClient.collection("sessions").insertOne(session);
         return session._id;
@@ -92,7 +92,7 @@ class session {
           "_id": mongo.ObjectId(),
           "userId": user._id,
           "sessionType": "api",
-          "date": Date.now()
+          "date": new Date()
         };
         await dbClient.collection("sessions").insertOne(session);
         return session._id;
