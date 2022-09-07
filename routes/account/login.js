@@ -4,10 +4,10 @@ const createError = require("http-errors");
 const poluino = require("poluinosdk");
 
 router.post("/", async function(req, res, next) {
-  if (!email || !password) { poluino.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
-
   const email = poluino.validation.sanitizeInput(req.body.email);
   const password = poluino.validation.sanitizeInput(req.body.password); // Password should be SHA-256 encrypted
+
+  if (!email || !password) { poluino.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
 
   try {
     const session = await poluino.session.addLoginSession(email, password);

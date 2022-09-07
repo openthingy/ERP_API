@@ -76,17 +76,16 @@ class session {
   /**
   * Add a new session (for API Key)
   * @function
-  * @param sessionId Session Id stored on the database.
+  * @param userId User Id stored on the database.
   * @returns {object} Returns the Session Id
   */
-  static async addAPISession(email, password) {
-    email = validation.sanitizeInput(email);
-    password = validation.sanitizeInput(password); // SHA-256 encrypted
+  static async addAPISession(userId) {
+    userId = validation.sanitizeInput(userId);
     const client = new mongo.MongoClient(mongoUrl);
     try {
       await client.connect();
       const dbClient = client.db(mongoDb);
-      const user = await dbClient.collection("users").findOne({"email": email, "password": password});
+      const user = await dbClient.collection("users").findOne({"_id": userId});
       if (user) {
         const session = {
           "_id": mongo.ObjectId(),
@@ -137,7 +136,7 @@ class session {
   * @param sessionId Session Id stored on the database.
   * @returns {object|boolean} Returns whether session is valid, if so also returns user ObjectId
   */
-  static async isSessionValid(sessionId) {
+  static async validateSession(sessionId) {
     sessionId = validation.sanitizeInput(sessionId);
     sessionId = mongo.ObjectId(sessionId);
     const client = new mongo.MongoClient(mongoUrl);
@@ -147,16 +146,20 @@ class session {
       const session = await dbClient.collection("sessions").findOne({"_id": sessionId});
       if (session) {
         if (session.date > 14400000 && session.type == "login") { // 14400000 miliseconds equals 4 hours
+          // Only Login Sessions expire
           this.deleteSession(sessionId);
-          return false; 
+          return "SESSION_NOT_VALID"; 
         } else {
           return {
-            "session": true,
+            "session": {
+              "active": true,
+              "type": session.type
+            },
             "userId": session.userId.toString()
           };
 
         }
-      } else { return false; }
+      } else { return "SESSION_NOT_FOUND"; }
     } catch (err) {
       error(err);
       return false;

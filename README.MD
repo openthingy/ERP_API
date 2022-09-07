@@ -1,5 +1,5 @@
 # Project Poluino Development is suspended
-Return Estimate: 11/2022 - 03/2023
+Release Estimate: 10/2022 - 03/2023
 # Project Poluino API
 This is Project Poluino API based on Node.JS + Express
 
