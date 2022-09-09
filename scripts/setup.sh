@@ -2,18 +2,18 @@
 if [[ $(lsb_release -rs) == "20.04" ]]; then
   echo "Compatible version detected"
 else
-  echo "Sorry this version of GesEnterprise is not compatible with your server version"
+  echo "Sorry this version of Project Poluino is not compatible with your server version"
   exit
 fi
 
 clear
-echo "
-------------------------------------------
-               GesEnterprise
-                    by
-                  CloudV
-------------------------------------------
-Warning: Do not run this file if you're
+echo "------------------------------------------"
+echo "Project Poluino"
+echo "by"
+echo "openthingy"
+echo "https://poluino.openthingy.com"
+echo "------------------------------------------"
+echo "Warning: Do not run this file if you're
 not sure how to install this software
 "
 # Is user sudo or root?
