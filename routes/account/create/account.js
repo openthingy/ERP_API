@@ -13,7 +13,7 @@ router.post("/", async function(req, res, next) {
     if (!isSessionValid) { return next(createError(500)); }
     if (isSessionValid == "SESSION_NOT_VALID" || isSessionValid == "SESSION_NOT_FOUND") { return next(createError(401, "Valid Session Not Found")); }
     if (isSessionValid.session.type == "api") {
-      poluino.warn(`${req.id}: Create API Key via API not allowed: ${sessionId}`);
+      poluino.warn(`${req.id}: Create Account via API not allowed: ${sessionId}`);
       return next(createError(406, "API session not allowed"));
     }
     poluino.info(`${req.id}: Login sucessful`);
