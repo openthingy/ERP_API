@@ -7,14 +7,16 @@ router.post("/", async function(req, res, next) {
   const email = erpsdk.validation.sanitizeInput(req.body.email);
   const password = erpsdk.validation.sanitizeInput(req.body.password); // Password should be SHA-256 encrypted
 
-  if (!email || !password) { erpsdk.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
+  if (!email || !password) { erpsdk.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Bad Request
 
   try {
-    const session = await erpsdk.session.addLoginSession(email, password);
-    if (!session) { return next(createError(500)); }
-    if (session == "WRONG_EMAIL_OR_PASSWORD") { return next(createError(401, "Wrong Email or Password")); }
+    const login = await erpsdk.auth.login(email, password);
+    if (!login) { return next(createError(500)); } // DB error
+    if (login == "WRONG_EMAIL_OR_PASSWORD") { return next(createError(401, "Wrong Email or Password")); }
     erpsdk.info(`${req.id}: Login sucessful`);
-    res.json({"sessionId": session});
+    req.session.email = email;
+    req.session.password = password;
+    res.json({"login": true});
   } catch (err) {
     erpsdk.error(`${req.id}: Something went wrong: ` + err);
     return next(createError(500)); // Internal Server Error

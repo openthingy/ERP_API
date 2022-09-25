@@ -10,7 +10,7 @@ const erpsdk = require("erpsdk");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Similar to PHP session system
-app.use(session({ secret: crypto.randomUUID(), cookie: { maxAge: 10800000 }})); // Cookie lasts up to 2 hours
+app.use(session({ genid: crypto.randomUUID(), cookie: { maxAge: 10800000 }})); // Cookie lasts up to 2 hours
 
 
 app.use(function (req, res, next) {

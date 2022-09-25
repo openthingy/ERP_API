@@ -5,8 +5,8 @@ const debug  = require("debug")("debug");
 const mongo = require("mongodb");
 
 // Modules
+const { auth } = require("./auth");
 
-//const crypto = require("crypto");
 // Logging
 const info = debug.extend("info");
 const warn = debug.extend("warn");
@@ -82,5 +82,6 @@ module.exports = {
   error,
   config,
   validation,
+  auth,
   user
 };
