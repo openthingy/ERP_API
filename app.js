@@ -2,17 +2,20 @@ const createError = require("http-errors");
 const express = require("express");
 const walkSync = require("walk-sync");
 const crypto = require("crypto");
+const session = require("express-session");
 const app = express();
 
-const poluino = require("poluinosdk");
+const erpsdk = require("erpsdk");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+// Similar to PHP session system
+app.use(session({ secret: crypto.randomUUID(), cookie: { maxAge: 10800000 }})); // Cookie lasts up to 2 hours
 
-// Request ID generator and begin logging
+
 app.use(function (req, res, next) {
   req.id = crypto.randomUUID(); // Generate a unique ID for each request
-  poluino.info(`${req.id}: IP: ${req.ip} Path: ${req.path} Time: ${new Date()}`); // For Tracing purposes
+  erpsdk.info(`${req.id}: IP: ${req.ip} Path: ${req.path} Time: ${new Date()}`); // For Tracing purposes
   next();
 });
 
@@ -27,18 +30,18 @@ paths.forEach(function (value) {
     let value_index = value.slice(0, -8);
     app.use("/" + value_index, require(dir + value_nojs)); // Route: /test
     app.use("/" + value_nojs, require(dir + value_nojs));  // Route: /test/index
-    poluino.info("Added Route: /" + value_index);
-    poluino.info("Added Route: /" + value_nojs);
+    erpsdk.info("Added Route: /" + value_index);
+    erpsdk.info("Added Route: /" + value_nojs);
   } else {
     app.use("/" + value_nojs, require(dir + value_nojs));
-    poluino.info("Added Route: /" + value_nojs);
+    erpsdk.info("Added Route: /" + value_nojs);
   }
 });
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  poluino.warn(`${req.id}: Reached 404`);
+  erpsdk.warn(`${req.id}: Reached 404`);
   return next(createError(404));
 });
 
@@ -48,7 +51,7 @@ app.use(function(req, res, next) {
 // or else the error handler just straight up stops working
 // eslint-disable-next-line no-unused-vars
 app.use(function(err, req, res, next) {
-  poluino.error(`${req.id}: Error: ${err}`);
+  erpsdk.error(`${req.id}: Error: ${err}`);
   // render the error page
   res.status(err.status || 500);
   res.json({"code": err.status, "error.message":err.message});

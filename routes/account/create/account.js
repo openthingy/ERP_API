@@ -1,25 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
-const poluino = require("poluinosdk");
+const erpsdk = require("erpsdk");
 
 router.post("/", async function(req, res, next) {
-  const sessionId = poluino.validation.sanitizeInput(req.body.sessionId);
+  const sessionId = erpsdk.validation.sanitizeInput(req.body.sessionId);
 
-  if (!sessionId) { poluino.warn(`${req.id}: Missing session Id`); return next(createError(400)); } // Doesnt execute the rest of the code
+  if (!sessionId) { erpsdk.warn(`${req.id}: Missing session Id`); return next(createError(400)); } // Doesnt execute the rest of the code
 
   try {
-    const isSessionValid = await poluino.session.validateSession(sessionId);
+    const isSessionValid = await erpsdk.session.validateSession(sessionId);
     if (!isSessionValid) { return next(createError(500)); }
     if (isSessionValid == "SESSION_NOT_VALID" || isSessionValid == "SESSION_NOT_FOUND") { return next(createError(401, "Valid Session Not Found")); }
     if (isSessionValid.session.type == "api") {
-      poluino.warn(`${req.id}: Create Account via API not allowed: ${sessionId}`);
+      erpsdk.warn(`${req.id}: Create Account via API not allowed: ${sessionId}`);
       return next(createError(406, "API session not allowed"));
     }
-    poluino.info(`${req.id}: Login sucessful`);
+    erpsdk.info(`${req.id}: Login sucessful`);
     //res.json({"sessionId": session});
   } catch (err) {
-    poluino.error(`${req.id}: Something went wrong: ` + err);
+    erpsdk.error(`${req.id}: Something went wrong: ` + err);
     return next(createError(500)); // Internal Server Error
   }
   

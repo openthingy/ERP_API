@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
-const poluino = require("poluinosdk");
+const erpsdk = require("erpsdk");
 
 router.post("/", async function(req, res, next) {
-  const email = poluino.validation.sanitizeInput(req.body.email);
-  const password = poluino.validation.sanitizeInput(req.body.password); // Password should be SHA-256 encrypted
+  const email = erpsdk.validation.sanitizeInput(req.body.email);
+  const password = erpsdk.validation.sanitizeInput(req.body.password); // Password should be SHA-256 encrypted
 
-  if (!email || !password) { poluino.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
+  if (!email || !password) { erpsdk.warn(`${req.id}: Missing email or password`); return next(createError(400)); } // Doesnt execute the rest of the code
 
   try {
-    const session = await poluino.session.addLoginSession(email, password);
+    const session = await erpsdk.session.addLoginSession(email, password);
     if (!session) { return next(createError(500)); }
     if (session == "WRONG_EMAIL_OR_PASSWORD") { return next(createError(401, "Wrong Email or Password")); }
-    poluino.info(`${req.id}: Login sucessful`);
+    erpsdk.info(`${req.id}: Login sucessful`);
     res.json({"sessionId": session});
   } catch (err) {
-    poluino.error(`${req.id}: Something went wrong: ` + err);
+    erpsdk.error(`${req.id}: Something went wrong: ` + err);
     return next(createError(500)); // Internal Server Error
   }
   

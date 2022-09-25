@@ -4,8 +4,8 @@ const router = express.Router();
 router.all("/", function(req, res) {
   res.json({
     "poluino": {
-      "version": "0.2beta",
-      "codename": "jellyfish"
+      "version": "0.1alpha",
+      "codename": "salmon"
     },
     "author": "@openthingy",
     "request": {

@@ -3,8 +3,8 @@ const mongoUrl = config.dbCredentials.mongoUrl;
 const mongoDb = config.dbCredentials.database;
 const debug  = require("debug")("debug");
 const mongo = require("mongodb");
+
 // Modules
-const { session } = require("./session");
 
 //const crypto = require("crypto");
 // Logging
@@ -82,6 +82,5 @@ module.exports = {
   error,
   config,
   validation,
-  session,
   user
 };
