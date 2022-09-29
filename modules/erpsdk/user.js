@@ -15,7 +15,7 @@ class auth {
   * @function
   * @param email Email
   * @param password SHA-256 encrypted password
-  * @returns {boolean|string} Returns wheter account exists or not
+  * @returns {boolean|string} Returns whether account exists or not
   */
   static async login(email, password) {
     email = main.validation.sanitizeInput(email);
@@ -33,7 +33,30 @@ class auth {
       await client.close();
     }
   } 
-}
+  
+  /**
+  * Check if device exists
+  * @function
+  * @param deviceId Device Id saved on the database
+  * @returns {boolean|string} Returns whether device exists or not
+  */
+  static async loginDevice(deviceId) {
+    deviceId = main.validation.sanitizeInput(deviceId);
+    deviceId = mongo.ObjectId(deviceId);
+    const client = new mongo.MongoClient(mongoUrl);
+    try {
+      await client.connect();
+      const dbClient = client.db(mongoDb);
+      const login = await dbClient.collection("devices").findOne({"_id": deviceId});
+      if (login) { return true; } else { return "UNKNOWN_DEVICE"; }
+    } catch (err) {
+      main.error(err);
+      return false;
+    } finally {
+      await client.close();
+    }
+  }
+} 
 
 module.exports = {
   auth

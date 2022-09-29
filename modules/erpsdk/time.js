@@ -11,7 +11,7 @@ const mongoDb = config.dbCredentials.database;
 * @class
 */
 class time {
-  static async addRecord(userId, time, type = "online") {
+  static async addRecord(userId, time, type) {
     userId = main.validation.sanitizeInput(userId);
     userId = mongo.ObjectId(userId);
     time = main.validation.sanitizeInput(time);
