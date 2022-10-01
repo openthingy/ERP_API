@@ -8,7 +8,7 @@ router.post("/", async function(req, res, next) {
   const type = erpsdk.validation.sanitizeInput(req.body.type);
 
   if (type == "online") {
-    if (!req.session.userId || !req.session.password) { erpsdk.warn(`${req.id}: Missing email or password in session`); return next(createError(401)); } // Unauthorized
+    if (!req.session.userId || !req.session.password) { erpsdk.warn(`${req.id}: Missing email or password in session`); return next(createError(400)); } 
     const userId = erpsdk.validation.sanitizeInput(req.session.userId);
     const password = erpsdk.validation.sanitizeInput(req.session.password);
     const time = new Date();
@@ -18,7 +18,7 @@ router.post("/", async function(req, res, next) {
       if (!login) { return next(createError(500)); } // DB error
       if (login == "WRONG_EMAIL_OR_PASSWORD") { return next(createError(401, "Wrong Email or Password")); }
       erpsdk.info(`${req.id}: Login sucessful`);
-      const timeRecord = await erpsdk.time.addRecord(userId, time, type);
+      const timeRecord = await erpsdk.time.addRecord(userId, userId, time, type);
       if (timeRecord) {
         res.json({"record": true});
       }
@@ -37,7 +37,7 @@ router.post("/", async function(req, res, next) {
       if (!login) { return next(createError(500)); } // DB error
       if (login == "UNKNOWN_DEVICE") { return next(createError(401, "Unknown Device Id")); }
       erpsdk.info(`${req.id}: Login sucessful`);
-      const timeRecord = await erpsdk.time.addRecord(userId, time, type);
+      const timeRecord = await erpsdk.time.addRecord(userId, deviceId, time, type);
       if (timeRecord) {
         res.json({"record": true});
       }

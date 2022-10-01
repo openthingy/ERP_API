@@ -11,7 +11,16 @@ const mongoDb = config.dbCredentials.database;
 * @class
 */
 class time {
-  static async addRecord(userId, time, type) {
+  /**
+  * Add a record to timesheet
+  * @function
+  * @param userId User Id (email)
+  * @param insertId User Id or Device Id that is inserting the device
+  * @param time Current Time
+  * @param type Request made online or through a device
+  * @returns {boolean|string} Returns whether device exists or not
+  */
+  static async addRecord(userId, insertId, time, type) {
     userId = main.validation.sanitizeInput(userId);
     userId = mongo.ObjectId(userId);
     time = main.validation.sanitizeInput(time);
@@ -20,7 +29,8 @@ class time {
       await client.connect();
       const dbClient = client.db(mongoDb);
       const record = await dbClient.collection("timesheet").insertOne({
-        "userId": userId, 
+        "userId": userId,
+        "insertedBy": insertId,
         "time": time,
         "type": type // type = online | physical
       });
@@ -33,6 +43,7 @@ class time {
       await client.close();
     }
   } 
+
 }
 
 module.exports = {
