@@ -1,10 +1,9 @@
-# Project Poluino Development is suspended
-Release Estimate: 10/2022 - 03/2023
-# Project Poluino API
-This is Project Poluino API based on Node.JS + Express
+Release Estimate: 01/2023 - 06/2023
+# ERP API
+This is ERP API based on Node.JS + Express
 
 # Setup
-Setup Poluino API (config.json)
+Setup ERP API (config.json)
 Make a symlink for config to modules
 
 Example:
