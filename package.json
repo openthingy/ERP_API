@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "debug": "DEBUG=debug:* nodemon ./bin/www",
-    "debug-win": "set DEBUG=debug:* && nodemon ./bin/www"
+    "debug-win": "set DEBUG=debug:* && nodemon ./bin/www",
+    "generate-routes": "node ./scripts/generateRoutes.js"
   },
   "dependencies": {
     "debug": "^4.3.4",
