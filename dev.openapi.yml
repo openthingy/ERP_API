@@ -28,11 +28,15 @@ tags:
     externalDocs:
       description: Find out more about our store
       url: http://docs.erp.openthingy.com/api/devices
-  - name: user
-    description: Operations about user
+  - name: User
+    description: User functions
+    externalDocs:
+      description: Documentation on user routes
+      url: http://docs.erp.openthingy.com/api/user
+
 paths:
   /hello:
-    put:
+    get:
       tags:
         - API
       summary: Test if connection is okay
@@ -44,68 +48,24 @@ paths:
           content:
             application/json:
               schema:
-                hello: string
-        '500':
-          description: Something is wrong with the server
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+                $ref: '#/components/schemas/testConn'
+      security: [] # No security required to test connection
+
+  /device/time/record:
     post:
       tags:
-        - pet
-      summary: Add a new pet to the store
-      description: Add a new pet to the store
-      operationId: addPet
-      requestBody:
-        description: Create a new pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Pet'
-        '405':
-          description: Invalid input
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-  /pet/findByStatus:
-    get:
-      tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
+        - Devices
+      summary: Adds a record to the timesheet
+      description: Add a record to the timesheet (typically using a keycard or something like that)
+      operationId: addRecord
       parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: false
-          explode: true
+        - name: deviceId
+          in: json
+          description: Current device Id
+          required: true
           schema:
-            type: string
-            default: available
-            enum:
-              - available
-              - pending
-              - sold
+            type: object
+            default: 
       responses:
         '200':
           description: successful operation
@@ -572,36 +532,18 @@ paths:
           description: User not found
 components:
   schemas:
+    testConn:
+      type: object
+      properties:
+        hello:
+          type: string
+          example: "world"
     Order:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
-        petId:
-          type: integer
-          format: int64
-          example: 198772
-        quantity:
-          type: integer
-          format: int32
-          example: 7
-        shipDate:
+        hello:
           type: string
-          format: date-time
-        status:
-          type: string
-          description: Order Status
-          example: approved
-          enum:
-            - placed
-            - approved
-            - delivered
-        complete:
-          type: boolean
-      xml:
-        name: order
+          example: "world"
     Customer:
       type: object
       properties:
@@ -761,15 +703,7 @@ components:
             items:
               $ref: '#/components/schemas/User'
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
+    apiKeyAuth:
       type: apiKey
-      name: api_key
       in: header
+      name: X-API-KEY
