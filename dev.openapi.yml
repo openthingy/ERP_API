@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: openthingy ERP - API
-  description: No description so far
+  description: Test API connection
   termsOfService: http://erp.openthingy.com/terms/
   contact:
     email: openthingy@gmail.com
