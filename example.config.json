@@ -1,6 +1,0 @@
-{
-    "dbCredentials": {
-        "mongoUrl": "mongodb://admin:p4ssw0rd@localhost:27017/?ssl=false",
-        "database": "poluino"
-    }
-}
