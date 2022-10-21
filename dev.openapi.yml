@@ -52,40 +52,49 @@ paths:
       security: [] # No security required to test connection
 
   /device/time/record:
+  # POST
     post:
       tags:
         - Devices
       summary: Adds a record to the timesheet
       description: Add a record to the timesheet (typically using a keycard or something like that)
       operationId: addRecord
-      parameters:
-        - name: deviceId
-          in: json
-          description: Current device Id
-          required: true
-          schema:
-            type: object
-            default: 
+      requestBody:
+        description: Include the device Id and user Id
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceId:
+                  type: string
+                  example: "635043bb7e8e586be7815f40"
+                userId:
+                  type: string
+                  example: "635043f31146919c5032d052"
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'          
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
+                type: object
+                properties:
+                  recordId:
+                    type: string
+                    example: "635043bb7e8e586be7815f40"
+                  date:
+                    type: object
+                    example: "2022-10-21T17:27:08.879Z"
+                #$ref: "#/components/schemas/deviceTimeRecordPost"
         '400':
-          description: Invalid status value
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+          description: Invalid data or request body
+        '401':
+          description: Unauthorized device
+      security: 
+        - apiKeyAuth: []
+
   /pet/findByTags:
     get:
       tags:
@@ -532,12 +541,20 @@ paths:
           description: User not found
 components:
   schemas:
+  # /hello
     testConn:
       type: object
       properties:
         hello:
           type: string
           example: "world"
+  # /device/time/record POST
+    deviceTimeRecordPost:
+      type: object
+      properties:
+        recordId:
+          type: string
+          example: "635062b0901f831e919cf4ff"
     Order:
       type: object
       properties:
